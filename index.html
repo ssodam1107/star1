@@ -1,0 +1,96 @@
+<idoctype html>
+<head>
+	<title>별이 떨어진다면</title>
+	<style>
+		.balloon{
+			width:50px; height:400px; 
+			background-repeat:no-repeat;
+			animation: bMove 8s linear;
+		}
+
+		@keyframes bMove{
+			0%{ background-position: 0 0px; opacity:0;}
+			20%{opacity:1;}
+			80%{ opacity:1; }
+			100%{ background-position:0 300px;opacity:0;}
+		}
+		 body{background: #00000C ;margin-bottom: 200px}
+
+	</style>
+</head>
+<div id="time" style="font-size: 2em"></div>
+<div id="displayMark" style="font-size: 2em">0</div>
+<body>
+	<script>
+	var timeD = setInterval(checkTime,100);
+	setTimeout(result,30000);
+	var game = setInterval(attachBalloon,500);
+
+	var a = 0;
+	var mark = 0;
+	function checkTime(){
+		a = a + 1;
+		console.log(a);
+		time.innerHTML = "빨간별은 누르지말아요. "+ (299 - a) / 10 + "초 남았어요.";
+		time.style.color = "white";
+	}
+
+	function result(){
+		alert("게임이 끝났습니다. 당신의 점수는\n"+mark+"점입니다.");
+		clearInterval(game);
+		clearInterval(timeD);
+	}
+
+	function attachBalloon(){
+		var t = document.createElement("div");
+		t.setAttribute("class","balloon"); 
+		t.style.position = "absolute"; 
+		
+		var color = randomBH(1,4);
+		t.style.background = "url('star_" + color + ".png') no-repeat";
+		
+		t.style.backgroundSize = "100% auto";
+		t.style.top = randomBH(0,window.innerHeight - 300) + "px";
+		t.style.left = randomBH(0,window.innerWidth) + "px";
+		t.addEventListener("animationend",remove);
+		t.onclick = function(){
+			markUp(this, color);
+		}
+		document.body.appendChild(t);		
+	}
+	
+	function markUp(t, color)
+	{
+		var markText = "";
+		if(color == 2){
+			mark -= 500;
+			markText = "이 멍텅구리야 넌 빨간색을 눌렀다구! " + mark+"점으로 줄었어!!";
+			displayMark.style.fontSize = "4em";
+			displayMark.style.color = "red";
+
+		
+		}else{
+			mark += 100;
+			markText = "잘했어! " + mark+"점이야!!";
+			displayMark.style.fontSize = "2em";
+			displayMark.style.color = "white";	
+		}
+		displayMark.innerHTML = markText;
+		remove(t);
+	}
+
+
+	//지워주기 함수(이건 그냥 복붙 )	
+	function remove(){
+		var t = event.target; //이벤트의 타겟을 t로 지정하고.
+		t.parentNode.removeChild(t); //그 엄마를 찾아서 자식중에 t를 지워라. 
+	}
+
+	//최소값과 최대값 사이의 임의의 숫자를 리턴하는 함수(복붙)
+	function randomBH(min, max) {
+  		min = Math.ceil(min);
+  		max = Math.floor(max);
+  		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+	</script>
+</body>
